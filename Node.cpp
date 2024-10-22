@@ -39,12 +39,14 @@ long long Node::req_data(int request_id){
 User::User(int id):Node(id, Node::USER){}
 
 void User::dataIn(int request_id, long long data_size){
-    assert(m_src_of_req.find(request_id) != m_src_of_req.end());
+    // cout<<"dataIn("<<request_id<<", "<<data_size<<")"<<endl;
+    // assert(m_dst_of_req.find(request_id) != m_dst_of_req.end());
     Node::dataIn(request_id, data_size);
 }
 
 void User::dataOut(int request_id, long long data_size){
-    assert(m_dst_of_req.find(request_id) != m_dst_of_req.end());
+    // cout<<"dataOut("<<request_id<<", "<<data_size<<")"<<endl;
+    assert(m_src_of_req.find(request_id) != m_src_of_req.end());
     Node::dataOut(request_id, data_size);
 }
 

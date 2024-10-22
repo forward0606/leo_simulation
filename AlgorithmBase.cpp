@@ -7,6 +7,24 @@ AlgorithmBase::AlgorithmBase(string graphFile, string reqFile){
     m_timeslot = 0;
 }
 
+// AlgorithmBase::~AlgorithmBase(){
+//     for(int i=0;i<(int)m_nodes.size();i++){
+//         delete m_nodes[i];
+//         m_nodes[i] = nullptr;
+//     }
+//     m_nodes.clear();
+//     for(int i=0;i<(int)graph.size();i++){
+//         for(auto &e:graph[i]){
+//             if(e.second != nullptr){
+//                 delete e.second;
+//                 e.second = nullptr;
+//             }
+//         }
+//         graph[i].clear();
+//     }
+//     m_graph_in.close();
+// }
+
 void AlgorithmBase::inputGraph(string file){
     m_graph_in.open(file);
     if(m_graph_in.fail()){
@@ -38,9 +56,16 @@ void AlgorithmBase::inputReq(string file){
     req_in>>n_req;
     m_requests.resize(n_req);
     for(int i=0;i<n_req;i++){
-        cin>>m_requests[i].src>>m_requests[i].dst;
-        cin>>m_requests[i].data_size>>m_requests[i].value;
-        cin>>m_requests[i].start>>m_requests[i].deadlines;
+        req_in>>m_requests[i].src>>m_requests[i].dst;
+        req_in>>m_requests[i].data_size>>m_requests[i].value;
+        req_in>>m_requests[i].start>>m_requests[i].deadlines;
+        Node *p = Node::NodeList.get(m_requests[i].src);
+        User *src = dynamic_cast<User *>(p);
+        src->add_src(i);
+
+        Node *p2 = Node::NodeList.get(m_requests[i].dst);
+        User *dst = dynamic_cast<User *>(p2);
+        dst->add_dst(i);
     }
     req_in.close();
 }
@@ -48,7 +73,7 @@ void AlgorithmBase::inputReq(string file){
 void AlgorithmBase::updateChannel(){
     // release old channel first
 
-    for(int i=0;i<graph.size();i++){
+    for(int i=0;i<(int)graph.size();i++){
         for(auto &e:graph[i]){
             if(e.second != nullptr){
                 delete e.second;
@@ -71,9 +96,22 @@ void AlgorithmBase::updateChannel(){
     }
 }
 
+
+void AlgorithmBase::addReq(){
+    for(int i=0;i<(int)m_requests.size();i++){
+        if(m_requests[i].start == m_timeslot){
+            Node *p = m_nodes[m_requests[i].src];
+            p->dataIn(i, m_requests[i].data_size);
+        }
+    }
+}
+
+
 void AlgorithmBase::start(){
     for(m_timeslot=0;m_timeslot<m_total_timeslot;m_timeslot++){
+        cout<<"m_timeslot: "<<m_timeslot<<endl;
         updateChannel();
+        addReq();
         assignChannels();
         nextTimeSlot();
     }
@@ -86,11 +124,29 @@ void AlgorithmBase::assignChannel(int reqno, int from, int to, long long data_si
 
 void AlgorithmBase::nextTimeSlot(){
     
-    for(int i=0;i<graph.size();i++){
+    for(int i=0;i<(int)graph.size();i++){
         for(auto e:graph[i]){
             if(e.second != nullptr){
                 e.second->next_timeslot();
             }
         }
     }
+    for(int i=0;i<(int)m_requests.size();i++){
+        const Request &r = m_requests[i];
+        if(m_timeslot != r.deadlines){
+            continue;
+        }
+        cout<<"request deadline: "<<i<<endl;
+        Node *dst = m_nodes[m_requests[i].dst];
+        long long arri_data = dst->req_data(i);
+        if(arri_data == r.data_size){
+            m_res["finishedReq"] += 1;
+            m_res["profit"] += r.value;
+        }
+    }
+}
+
+
+long long AlgorithmBase::getRes(string s){
+    return m_res[s];
 }

@@ -24,15 +24,19 @@ class AlgorithmBase{
     vector<map<int, Channel *>> graph;
     vector<Node *> m_nodes;
     vector<Request> m_requests;
+    map<string, long long> m_res;
 public:
     AlgorithmBase(string graphFile, string reqFile);
+    // ~AlgorithmBase();
     void inputGraph(string file);
     void inputReq(string file);
     void updateChannel();
     void start();
+    void addReq();
     virtual void assignChannels()=0;
     void assignChannel(int reqno, int from, int to, long long data_size);
     void nextTimeSlot();
+    long long getRes(string s);
 };
 
 #endif
