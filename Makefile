@@ -19,18 +19,8 @@ a.out: main.cpp $(dependency)
 test.out: Node.o test_node.cpp 
 	$(CC) $(CFLAGS) test_node.cpp Node.o  -o test.out
 
-
-Node.o: Node.h Node.cpp 
-	$(CC) $(CFLAGS) -c  Node.h Node.cpp  
-
-Channel.o: Channel.h Channel.cpp
-	$(CC) $(CFLAGS) -c Channel.h Channel.cpp
-
-AlgorithmBase.o: AlgorithmBase.h AlgorithmBase.cpp
-	$(CC) $(CFLAGS) -c AlgorithmBase.h AlgorithmBase.cpp
-
-AlgoLP.o: AlgoLP.h AlgoLP.cpp
-	$(CC) $(CFLAGS) -c AlgoLP.h AlgoLP.cpp
+%.o: %.cpp %.h
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	-rm *.out
