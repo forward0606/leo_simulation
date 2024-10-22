@@ -1,11 +1,9 @@
 #include "Node.h"
 
 
-Container<Node*> Node::NodeList; // Define the static member
 
 Node::Node(int id, string type, long long storage)
     :m_id(id), m_type(type), m_total_storage(storage), m_used_storage(0){
-    NodeList.insert(id, this);
 }
 
 

@@ -1,7 +1,6 @@
 #ifndef __NODE_H
 #define __NODE_H
 
-#include "Container.h"
 
 #include <iostream>
 #include <vector>
@@ -20,7 +19,6 @@ class Node{ // some constant
     // store[i]: number of data which is belong to request i store at this node
     map<int, long long> m_store;  
 public:
-    static Container<Node*> NodeList;
     static const long long MAX_STORAGE = 1e11;
     inline const static string SATELLITE = "satellite";
     inline const static string USER = "user";

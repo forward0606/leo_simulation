@@ -20,8 +20,8 @@ test.out: Node.o test_node.cpp
 	$(CC) $(CFLAGS) test_node.cpp Node.o  -o test.out
 
 
-Node.o: Node.h Node.cpp Container.h
-	$(CC) $(CFLAGS) -c  Node.h Node.cpp  Container.h
+Node.o: Node.h Node.cpp 
+	$(CC) $(CFLAGS) -c  Node.h Node.cpp  
 
 Channel.o: Channel.h Channel.cpp
 	$(CC) $(CFLAGS) -c Channel.h Channel.cpp

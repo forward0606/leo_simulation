@@ -59,11 +59,11 @@ void AlgorithmBase::inputReq(string file){
         req_in>>m_requests[i].src>>m_requests[i].dst;
         req_in>>m_requests[i].data_size>>m_requests[i].value;
         req_in>>m_requests[i].start>>m_requests[i].deadlines;
-        Node *p = Node::NodeList.get(m_requests[i].src);
+        Node *p = m_nodes[m_requests[i].src];
         User *src = dynamic_cast<User *>(p);
         src->add_src(i);
 
-        Node *p2 = Node::NodeList.get(m_requests[i].dst);
+        Node *p2 = m_nodes[m_requests[i].dst];
         User *dst = dynamic_cast<User *>(p2);
         dst->add_dst(i);
     }
@@ -89,9 +89,9 @@ void AlgorithmBase::updateChannel(){
     long long cap;
     for(int i=0;i<links;i++){
         m_graph_in>>u>>v>>cap;
-        Channel *c = new Channel(u, v, cap);
+        Channel *c = new Channel(m_nodes[u], m_nodes[v], cap);
         graph[u][v] = c;
-        c = new Channel(v, u, cap);
+        c = new Channel(m_nodes[v], m_nodes[u], cap);
         graph[v][u] = c;
     }
 }
